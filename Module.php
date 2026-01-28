@@ -103,17 +103,29 @@ class Module extends AbstractModule
                 'browse'
             ]
         );
-
-        $acl->allow(
-            Acl::ROLE_GROUP_EDITOR,
-            [
-                'CSVImport\Controller\Index'
-            ],
-            [
-                'index',
-                'browse'
-            ]
-        );
+        
+        if ($acl->hasResource('CSVImport\Controller\Index'))
+        {
+            $acl->allow(
+                Acl::ROLE_GROUP_EDITOR,
+                [
+                    'CSVImport\Controller\Index',
+                    \CSVImport\Api\Adapter\EntityAdapter::class,
+                    \CSVImport\Api\Adapter\ImportAdapter::class,
+                    \CSVImport\Entity\CSVImportEntity::class,
+                    \CSVImport\Entity\CSVImportImport::class,
+                ]
+            );
+            $acl->allow(
+                Acl::ROLE_GROUP_EDITOR,
+                [
+                    \Omeka\Api\Adapter\ItemAdapter::class
+                ],
+                [
+                    'batch_create'
+                ]
+            );
+        }
 
         // Permissions for assets
         $acl->deny(
